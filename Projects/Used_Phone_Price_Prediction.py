@@ -2,12 +2,14 @@ import streamlit as st
 import numpy as np 
 from joblib import load
 
+brand_dict = load('brand_dict')
+
 def load_model(model_file):
     model = load(model_file)
     return model
 
-def predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used, normalized_new_price):
-    x = np.array([[screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used, normalized_new_price]])
+def predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used, normalized_new_price, device_brand):
+    x = np.array([[screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used, normalized_new_price, device_brand]])
     y = model.predict(x)
     return y[0]
 
@@ -35,9 +37,10 @@ with st.form(key='my_form'):
     days_used_ = st.number_input(
         label='Total number of days used', value=1000, min_value=1)
     normalized_new_price = st.slider("Used Price", 0, 100000, 500)
+    device_brand = st.selectbox("Device Brand", brand_dict)
     submit_button = st.form_submit_button(label="Predict")
 
 if submit_button:
     model = load_model('Used_Device_Price_Prediction.joblib')
-    price = predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used_, normalized_new_price)
+    price = predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used_, normalized_new_price, device_brand)
     st.success(f'Predicted Price: {int(price):,}')
