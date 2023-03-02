@@ -29,18 +29,19 @@ with st.form(key='my_form'):
     internal_memory = st.number_input(
         label='Memory Size', value=512, min_value=16)
     ram = st.number_input(
-        label='RAM', value=16, min_value=4)
+        label='RAM', value=16, min_value=2)
     battery = st.number_input(
         label='Battery Capacity', value=1000, min_value=100)
     weight = st.number_input(
         label='Weight', value=1000, min_value=100)
     days_used_ = st.number_input(
         label='Total number of days used', value=1000, min_value=1)
-    normalized_new_price = st.slider("Used Price", 0, 100000, 500)
-    device_brand = st.selectbox("Device Brand", brand_dict)
+    normalized_new_price = st.number_input(
+        label='Normalized Used Price', value=10.0, min_value=0.0)
+    device_brand = st.selectbox("Device Brand", list(brand_dict.keys()))
     submit_button = st.form_submit_button(label="Predict")
 
 if submit_button:
     model = load_model('Used_Device_Price_Prediction.joblib')
-    price = predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used_, normalized_new_price, device_brand)
-    st.success(f'Predicted Price: {int(price):,}')
+    price = predict(model, screen_size, _4g, _5g, rear_camera_mp, front_camera_mp, internal_memory, ram, battery, weight, days_used_, normalized_new_price, brand_dict[device_brand])
+    st.success(f'Predicted Price: {price:.2}')
