@@ -113,6 +113,4 @@ ui = gr.Interface(
     ],
     outputs="text",
 )
-
-if __name__ == "__main__":
-    ui.launch(share=True)
+ui.launch()
